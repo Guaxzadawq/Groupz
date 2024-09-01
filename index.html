@@ -71,6 +71,31 @@
     </div>
 
     <script>
+        // Função para salvar grupos no localStorage
+        function saveGroups(groups) {
+            localStorage.setItem('groups', JSON.stringify(groups));
+        }
+
+        // Função para carregar grupos do localStorage
+        function loadGroups() {
+            const groups = JSON.parse(localStorage.getItem('groups')) || [];
+            return groups;
+        }
+
+        // Função para exibir os grupos na página
+        function displayGroups() {
+            const groupList = document.getElementById('groupList');
+            const groups = loadGroups();
+            groupList.innerHTML = '<h2>Grupos Publicados</h2>'; // Limpar a lista antes de adicionar novos
+            groups.forEach(group => {
+                const groupItem = document.createElement('div');
+                groupItem.className = 'group-item';
+                groupItem.innerHTML = `<h3>${group.name}</h3><p>${group.description}</p>`;
+                groupList.appendChild(groupItem);
+            });
+        }
+
+        // Adicionar um novo grupo
         document.getElementById('groupForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -78,17 +103,26 @@
             const name = document.getElementById('groupName').value;
             const description = document.getElementById('groupDescription').value;
 
-            // Criar um novo item para a lista de grupos
-            const groupItem = document.createElement('div');
-            groupItem.className = 'group-item';
-            groupItem.innerHTML = `<h3>${name}</h3><p>${description}</p>`;
+            // Obter grupos existentes
+            const groups = loadGroups();
 
-            // Adicionar o novo grupo à lista de grupos
-            document.getElementById('groupList').appendChild(groupItem);
+            // Adicionar o novo grupo
+            groups.push({ name, description });
+
+            // Salvar os grupos atualizados
+            saveGroups(groups);
 
             // Limpar o formulário
             document.getElementById('groupForm').reset();
+
+            // Atualizar a lista de grupos
+            displayGroups();
         });
+
+        // Carregar e exibir grupos ao carregar a página
+        window.onload = function() {
+            displayGroups();
+        };
     </script>
 </body>
 </html>
