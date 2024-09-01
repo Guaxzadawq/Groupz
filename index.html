@@ -3,126 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Publicar Grupos</title>
+    <title>Bate-Papo Profissional</title>
+    <!-- CSS incorporado -->
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-        }
-        header {
-            background: #333;
-            color: #fff;
-            padding-top: 30px;
-            min-height: 70px;
-            border-bottom: #fff 3px solid;
-            text-align: center;
-        }
-        form {
+
+        .chat-container {
+            width: 400px;
             background: #fff;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 5px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
         }
-        form input, form textarea {
-            width: 100%;
+
+        .user-info {
+            display: flex;
+            align-items: center;
             padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .group-list {
-            background: #fff;
-            padding: 20px;
-            border-radius: 5px;
-        }
-        .group-item {
+            background: #f1f1f1;
             border-bottom: 1px solid #ddd;
-            padding: 10px 0;
         }
-        .group-item:last-child {
-            border-bottom: none;
+
+        .user-photo-label {
+            cursor: pointer;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .message-input {
+            display: flex;
+            padding: 10px;
+            background: #f1f1f1;
+        }
+
+        #message {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #send-btn {
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #send-btn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Publicar e Visualizar Grupos</h1>
-    </header>
-
-    <div class="container">
-        <form id="groupForm">
-            <h2>Adicionar Novo Grupo</h2>
-            <input type="text" id="groupName" placeholder="Nome do Grupo" required>
-            <textarea id="groupDescription" rows="4" placeholder="Descrição do Grupo" required></textarea>
-            <button type="submit">Adicionar Grupo</button>
-        </form>
-
-        <div class="group-list" id="groupList">
-            <h2>Grupos Publicados</h2>
-            <!-- Os grupos serão listados aqui -->
+    <div class="chat-container">
+        <div class="user-info">
+            <label for="user-photo" class="user-photo-label">
+                <img id="user-photo-preview" src="default-avatar.png" alt="Foto do Usuário">
+            </label>
+            <input type="file" id="user-photo" accept="image/*" style="display: none;">
+            <input type="text" id="username" placeholder="Nome de Usuário">
+        </div>
+        <div class="chat-box" id="chat-box"></div>
+        <div class="message-input">
+            <input type="text" id="message" placeholder="Digite uma mensagem...">
+            <button id="send-btn">Enviar</button>
         </div>
     </div>
-
+    <!-- JavaScript incorporado -->
     <script>
-        // Função para salvar grupos no localStorage
-        function saveGroups(groups) {
-            localStorage.setItem('groups', JSON.stringify(groups));
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const sendBtn = document.getElementById('send-btn');
+            const messageInput = document.getElementById('message');
+            const chatBox = document.getElementById('chat-box');
+            const usernameInput = document.getElementById('username');
+            const userPhotoInput = document.getElementById('user-photo');
+            const userPhotoPreview = document.getElementById('user-photo-preview');
 
-        // Função para carregar grupos do localStorage
-        function loadGroups() {
-            const groups = JSON.parse(localStorage.getItem('groups')) || [];
-            return groups;
-        }
+            let messages = [];
 
-        // Função para exibir os grupos na página
-        function displayGroups() {
-            const groupList = document.getElementById('groupList');
-            const groups = loadGroups();
-            groupList.innerHTML = '<h2>Grupos Publicados</h2>'; // Limpar a lista antes de adicionar novos
-            groups.forEach(group => {
-                const groupItem = document.createElement('div');
-                groupItem.className = 'group-item';
-                groupItem.innerHTML = `<h3>${group.name}</h3><p>${group.description}</p>`;
-                groupList.appendChild(groupItem);
+            userPhotoInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    userPhotoPreview.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
             });
-        }
 
-        // Adicionar um novo grupo
-        document.getElementById('groupForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+            sendBtn.addEventListener('click', () => {
+                const messageText = messageInput.value.trim();
+                const username = usernameInput.value.trim();
+                const userPhoto = userPhotoPreview.src;
 
-            // Obter valores dos campos do formulário
-            const name = document.getElementById('groupName').value;
-            const description = document.getElementById('groupDescription').value;
+                if (messageText && username) {
+                    const message = {
+                        username: username,
+                        text: messageText,
+                        photo: userPhoto,
+                        timestamp: new Date().toLocaleTimeString()
+                    };
+                    messages.push(message);
+                    displayMessages();
+                    messageInput.value = '';
+                } else {
+                    alert('Por favor, insira um nome de usuário e uma mensagem.');
+                }
+            });
 
-            // Obter grupos existentes
-            const groups = loadGroups();
-
-            // Adicionar o novo grupo
-            groups.push({ name, description });
-
-            // Salvar os grupos atualizados
-            saveGroups(groups);
-
-            // Limpar o formulário
-            document.getElementById('groupForm').reset();
-
-            // Atualizar a lista de grupos
-            displayGroups();
+            function displayMessages() {
+                chatBox.innerHTML = '';
+                messages.forEach(message => {
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('chat-message');
+                    messageElement.innerHTML = `
+                        <img src="${message.photo}" class="chat-photo" alt="Foto do Usuário">
+                        <div class="chat-text">
+                            <strong>${message.username}</strong> <span class="chat-time">${message.timestamp}</span><br>
+                            ${message.text}
+                        </div>
+                    `;
+                    chatBox.appendChild(messageElement);
+                });
+            }
         });
-
-        // Carregar e exibir grupos ao carregar a página
-        window.onload = function() {
-            displayGroups();
-        };
     </script>
 </body>
 </html>
