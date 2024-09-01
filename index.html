@@ -50,9 +50,13 @@
             const foto = fotoInput.files[0];
             const grupoId = new Date().getTime(); // Usa o timestamp como ID único
 
+            if (!foto) {
+                alert('Por favor, selecione uma foto.');
+                return;
+            }
+
             // Cria um URL temporário para a imagem
             const reader = new FileReader();
-            reader.readAsDataURL(foto);
             reader.onload = function(event) {
                 const imgSrc = event.target.result;
 
@@ -102,6 +106,7 @@
                 // Limpa o formulário
                 document.getElementById('form-grupo').reset();
             };
+            reader.readAsDataURL(foto); // Inicia a leitura do arquivo
         });
 
         function armazenarGrupo(grupo) {
