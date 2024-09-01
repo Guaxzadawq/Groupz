@@ -3,159 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bate-Papo Profissional</title>
-    <!-- CSS incorporado -->
+    <title>Chat Profissional</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .chat-container {
-            width: 400px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background: #f1f1f1;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .user-photo-label {
-            cursor: pointer;
-        }
-
-        .user-info img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .user-info input[type="text"] {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .chat-box {
-            flex: 1;
-            padding: 10px;
-            overflow-y: auto;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .message-input {
-            display: flex;
-            padding: 10px;
-            background: #f1f1f1;
-        }
-
-        #message {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        #send-btn {
-            padding: 10px 20px;
-            margin-left: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        #send-btn:hover {
-            background-color: #0056b3;
-        }
+        body { font-family: Arial, sans-serif; }
+        #chat { border: 1px solid #ccc; padding: 10px; width: 300px; height: 400px; overflow-y: scroll; }
+        #message { width: 80%; }
+        #send { width: 18%; }
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="user-info">
-            <label for="user-photo" class="user-photo-label">
-                <img id="user-photo-preview" src="default-avatar.png" alt="Foto do Usuário">
-            </label>
-            <input type="file" id="user-photo" accept="image/*" style="display: none;">
-            <input type="text" id="username" placeholder="Nome de Usuário">
-        </div>
-        <div class="chat-box" id="chat-box"></div>
-        <div class="message-input">
-            <input type="text" id="message" placeholder="Digite uma mensagem...">
-            <button id="send-btn">Enviar</button>
-        </div>
-    </div>
-    <!-- JavaScript incorporado -->
+    <h1>Chat Profissional</h1>
+    <div id="chat"></div>
+    <input type="text" id="username" placeholder="Nome de usuário">
+    <input type="text" id="message" placeholder="Digite sua mensagem">
+    <button id="send">Enviar</button>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const sendBtn = document.getElementById('send-btn');
-            const messageInput = document.getElementById('message');
-            const chatBox = document.getElementById('chat-box');
-            const usernameInput = document.getElementById('username');
-            const userPhotoInput = document.getElementById('user-photo');
-            const userPhotoPreview = document.getElementById('user-photo-preview');
+        const chat = document.getElementById('chat');
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('send');
+        const usernameInput = document.getElementById('username');
 
-            let messages = [];
-
-            userPhotoInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    userPhotoPreview.src = event.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
-
-            sendBtn.addEventListener('click', () => {
-                const messageText = messageInput.value.trim();
-                const username = usernameInput.value.trim();
-                const userPhoto = userPhotoPreview.src;
-
-                if (messageText && username) {
-                    const message = {
-                        username: username,
-                        text: messageText,
-                        photo: userPhoto,
-                        timestamp: new Date().toLocaleTimeString()
-                    };
-                    messages.push(message);
-                    displayMessages();
-                    messageInput.value = '';
-                } else {
-                    alert('Por favor, insira um nome de usuário e uma mensagem.');
-                }
-            });
-
-            function displayMessages() {
-                chatBox.innerHTML = '';
-                messages.forEach(message => {
-                    const messageElement = document.createElement('div');
-                    messageElement.classList.add('chat-message');
-                    messageElement.innerHTML = `
-                        <img src="${message.photo}" class="chat-photo" alt="Foto do Usuário">
-                        <div class="chat-text">
-                            <strong>${message.username}</strong> <span class="chat-time">${message.timestamp}</span><br>
-                            ${message.text}
-                        </div>
-                    `;
-                    chatBox.appendChild(messageElement);
-                });
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value;
+            const username = usernameInput.value;
+            if (message && username) {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = `${username}: ${message}`;
+                chat.appendChild(messageElement);
+                messageInput.value = '';
+                chat.scrollTop = chat.scrollHeight;
             }
         });
     </script>
