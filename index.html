@@ -5,78 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Divulgue seus grupos</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .grupo {
-            background-color: white;
-            padding: 20px;
-            margin: 10px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            text-align: center;
-            position: relative;
-        }
-        .grupo img {
-            width: 100%;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-        .grupo h3 a {
-            text-decoration: none;
-            color: black;
-        }
-        .grupo h3 a:hover {
-            text-decoration: underline;
-            color: #4CAF50;
-        }
-        .formulario {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            margin-bottom: 20px;
-        }
-        .formulario input,
-        .formulario textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        .formulario button {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .btn-excluir {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #f44336;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .descricao {
-            text-align: left;
-            font-weight: bold;
-        }
+        /* Seu estilo existente aqui */
     </style>
 </head>
 <body>
@@ -179,10 +108,12 @@
             let grupos = JSON.parse(localStorage.getItem('grupos')) || [];
             grupos.push(grupo);
             localStorage.setItem('grupos', JSON.stringify(grupos));
+            console.log('Grupo armazenado:', grupo); // Adicionado para depuração
         }
 
         function carregarGrupos() {
             const grupos = JSON.parse(localStorage.getItem('grupos')) || [];
+            console.log('Grupos carregados:', grupos); // Adicionado para depuração
             grupos.forEach(grupo => {
                 // Cria uma nova div para cada grupo armazenado
                 const novoGrupo = document.createElement('div');
@@ -237,6 +168,7 @@
             let grupos = JSON.parse(localStorage.getItem('grupos')) || [];
             grupos = grupos.filter(grupo => grupo.id !== parseInt(id));
             localStorage.setItem('grupos', JSON.stringify(grupos));
+            console.log('Grupo excluído:', id); // Adicionado para depuração
         }
 
         // Carrega os grupos armazenados ao carregar a página
